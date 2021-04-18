@@ -8,18 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		4BE53D53262CB0D4000FAEEB /* HW_1_8App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D52262CB0D4000FAEEB /* HW_1_8App.swift */; };
-		4BE53D55262CB0D4000FAEEB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D54262CB0D4000FAEEB /* ContentView.swift */; };
 		4BE53D57262CB0D6000FAEEB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BE53D56262CB0D6000FAEEB /* Assets.xcassets */; };
 		4BE53D5A262CB0D6000FAEEB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BE53D59262CB0D6000FAEEB /* Preview Assets.xcassets */; };
+		4BE53D63262CB386000FAEEB /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D62262CB386000FAEEB /* CameraView.swift */; };
+		4BE53D68262CC145000FAEEB /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D67262CC145000FAEEB /* CameraService.swift */; };
+		4BE53D6C262CC4B3000FAEEB /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D6B262CC4B3000FAEEB /* CameraViewModel.swift */; };
+		4BE53D6F262CC4E6000FAEEB /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D6E262CC4E6000FAEEB /* CameraPreview.swift */; };
+		4BE53D75262CC53B000FAEEB /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D74262CC53B000FAEEB /* PhotoCaptureProcessor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4BE53D4F262CB0D4000FAEEB /* HW_1_8.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HW_1_8.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BE53D52262CB0D4000FAEEB /* HW_1_8App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HW_1_8App.swift; sourceTree = "<group>"; };
-		4BE53D54262CB0D4000FAEEB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4BE53D56262CB0D6000FAEEB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4BE53D59262CB0D6000FAEEB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4BE53D5B262CB0D6000FAEEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4BE53D62262CB386000FAEEB /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		4BE53D67262CC145000FAEEB /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		4BE53D6B262CC4B3000FAEEB /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
+		4BE53D6E262CC4E6000FAEEB /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		4BE53D74262CC53B000FAEEB /* PhotoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCaptureProcessor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,8 +60,11 @@
 		4BE53D51262CB0D4000FAEEB /* HW_1_8 */ = {
 			isa = PBXGroup;
 			children = (
+				4BE53D79262CCE86000FAEEB /* Views */,
+				4BE53D7A262CCEA7000FAEEB /* ViewModel */,
+				4BE53D7C262CCECE000FAEEB /* Helpers */,
+				4BE53D7B262CCEC2000FAEEB /* Services */,
 				4BE53D52262CB0D4000FAEEB /* HW_1_8App.swift */,
-				4BE53D54262CB0D4000FAEEB /* ContentView.swift */,
 				4BE53D56262CB0D6000FAEEB /* Assets.xcassets */,
 				4BE53D5B262CB0D6000FAEEB /* Info.plist */,
 				4BE53D58262CB0D6000FAEEB /* Preview Content */,
@@ -67,6 +78,39 @@
 				4BE53D59262CB0D6000FAEEB /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4BE53D79262CCE86000FAEEB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4BE53D62262CB386000FAEEB /* CameraView.swift */,
+				4BE53D6E262CC4E6000FAEEB /* CameraPreview.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		4BE53D7A262CCEA7000FAEEB /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				4BE53D6B262CC4B3000FAEEB /* CameraViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		4BE53D7B262CCEC2000FAEEB /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				4BE53D67262CC145000FAEEB /* CameraService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		4BE53D7C262CCECE000FAEEB /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				4BE53D74262CC53B000FAEEB /* PhotoCaptureProcessor.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,7 +182,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4BE53D55262CB0D4000FAEEB /* ContentView.swift in Sources */,
+				4BE53D68262CC145000FAEEB /* CameraService.swift in Sources */,
+				4BE53D63262CB386000FAEEB /* CameraView.swift in Sources */,
+				4BE53D75262CC53B000FAEEB /* PhotoCaptureProcessor.swift in Sources */,
+				4BE53D6F262CC4E6000FAEEB /* CameraPreview.swift in Sources */,
+				4BE53D6C262CC4B3000FAEEB /* CameraViewModel.swift in Sources */,
 				4BE53D53262CB0D4000FAEEB /* HW_1_8App.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

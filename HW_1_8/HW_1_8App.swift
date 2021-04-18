@@ -11,7 +11,7 @@ import SwiftUI
 struct HW_1_8App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CameraView()
         }
     }
 }
