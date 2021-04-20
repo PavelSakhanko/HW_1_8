@@ -19,9 +19,6 @@ final class CameraViewModel: ObservableObject {
     func configure() {
         service.checkForPermissions()
         service.configureSession()
-    }
-
-    func capturePhoto() {
-        service.capturePhoto()
+        service.captureMedia()
     }
 }

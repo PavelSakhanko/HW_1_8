@@ -5,7 +5,9 @@
 //  Created by Pavel Sakhanko on 18.04.21.
 //
 
+import UIKit
 import AVFoundation
+import Vision
 
 enum SessionSetupResult {
     case success
@@ -13,62 +15,88 @@ enum SessionSetupResult {
     case configurationFailed
 }
 
-class CameraService {
-
-    @Published public var willCapturePhoto = false
-    @Published public var isCameraUnavailable = true
-
+final class CameraService: NSObject {
+    @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
+    private let videoOutput = AVCaptureVideoDataOutput()
+    private let videoDataOutputQueue = DispatchQueue(label: "camera session queue")
+    private var setupResult: SessionSetupResult = .success
+    var bufferSize: CGSize = .zero
     public let session = AVCaptureSession()
     private var isSessionRunning = false
     private var isConfigured = false
-    private var setupResult: SessionSetupResult = .success
-    private let sessionQueue = DispatchQueue(label: "camera session queue")
-    @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
-    private let photoOutput = AVCapturePhotoOutput()
-    private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
+
+    override init() {
+        super.init()
+        self.videoOutput.alwaysDiscardsLateVideoFrames = true
+        self.videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] as [String: Any]
+        ObjectRecognitionService().setupVision()
+    }
+
+    deinit {
+        self.videoOutput.setSampleBufferDelegate(nil, queue: nil)
+    }
 
     public func checkForPermissions() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             break
         case .notDetermined:
-            sessionQueue.suspend()
+            videoDataOutputQueue.suspend()
             AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
                 if !granted {
                     self.setupResult = .notAuthorized
                 }
-                self.sessionQueue.resume()
+                self.videoDataOutputQueue.resume()
             })
         default:
             setupResult = .notAuthorized
-            DispatchQueue.main.async {
-                self.isCameraUnavailable = true
-            }
         }
     }
 
     public func configureSession() {
-        if setupResult != .success {
-            return
-        }
+        guard setupResult == .success else { return }
         session.beginConfiguration()
-        session.sessionPreset = .photo
+        session.sessionPreset = .vga640x480
 
         do {
-            var defaultVideoDevice: AVCaptureDevice?
-            
-            if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-                defaultVideoDevice = backCameraDevice
-            } else if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-                defaultVideoDevice = frontCameraDevice
+            guard let videoDevice = videoDevice() else { return }
+            setVideoDeviceInput(videoDevice: videoDevice)
+        }
+        setVideoOutput()
+
+        session.commitConfiguration()
+        self.isConfigured = true
+        self.start()
+    }
+
+    private func videoDevice() -> AVCaptureDevice? {
+        guard let videoDevice = AVCaptureDevice.DiscoverySession(
+            deviceTypes: [.builtInWideAngleCamera],
+            mediaType: .video,
+            position: .back
+        ).devices.first else {
+            setupResult = .configurationFailed
+            session.commitConfiguration()
+            return nil
+        }
+        return videoDevice
+    }
+
+    private func start() {
+        videoDataOutputQueue.async {
+            if !self.isSessionRunning && self.isConfigured {
+                switch self.setupResult {
+                case .success:
+                    self.session.startRunning()
+                    self.isSessionRunning = self.session.isRunning
+                default: break
+                }
             }
-            
-            guard let videoDevice = defaultVideoDevice else {
-                setupResult = .configurationFailed
-                session.commitConfiguration()
-                return
-            }
-            
+        }
+    }
+    
+    public func setVideoDeviceInput(videoDevice: AVCaptureDevice) {
+        do {
             let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
             
             if session.canAddInput(videoDeviceInput) {
@@ -80,84 +108,65 @@ class CameraService {
                 return
             }
         } catch {
-            setupResult = .configurationFailed
-            session.commitConfiguration()
+            print("Could not create video device input: \(error)")
             return
         }
+    }
 
-        if session.canAddOutput(photoOutput) {
-            session.addOutput(photoOutput)
-            photoOutput.isHighResolutionCaptureEnabled = true
-            photoOutput.maxPhotoQualityPrioritization = .quality
+    private func setVideoOutput() {
+        if session.canAddOutput(videoOutput) {
+            session.addOutput(videoOutput)
+            videoOutput.alwaysDiscardsLateVideoFrames = true
+            videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+            videoOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
         } else {
             setupResult = .configurationFailed
-            session.commitConfiguration()
+            print("Could not add video data output to the session")
             return
         }
-
-        session.commitConfiguration()
-        self.isConfigured = true
-        self.start()
     }
 
-    public func start() {
-        sessionQueue.async {
-            if !self.isSessionRunning && self.isConfigured {
-                switch self.setupResult {
-                case .success:
-                    self.session.startRunning()
-                    self.isSessionRunning = self.session.isRunning
-                    
-                    if self.session.isRunning {
-                        self.isCameraUnavailable = false
-                    }
-                case .configurationFailed, .notAuthorized:
-                    self.isCameraUnavailable = true
-                }
-            }
-        }
-    }
-
-    public func capturePhoto() {
+    func captureMedia() {
         if self.setupResult != .configurationFailed {
-            sessionQueue.async {
-                if let photoOutputConnection = self.photoOutput.connection(with: .video) {
-                    photoOutputConnection.videoOrientation = .portrait
-                }
-                var photoSettings = AVCapturePhotoSettings()
-
-                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-                }
-
-                photoSettings.isHighResolutionPhotoEnabled = true
+            videoDataOutputQueue.async {
+                let captureConnection = self.videoOutput.connection(with: .video)
+                captureConnection?.videoOrientation = .portrait
+                captureConnection?.isEnabled = true
                 
-                if !photoSettings.__availablePreviewPhotoPixelFormatTypes.isEmpty {
-                    photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.__availablePreviewPhotoPixelFormatTypes.first!]
-                }
-                
-                photoSettings.photoQualityPrioritization = .quality
-                
-                let photoCaptureProcessor = PhotoCaptureProcessor(
-                    with: photoSettings,
-                    willCapturePhotoAnimation: {
-                    DispatchQueue.main.async {
-                        self.willCapturePhoto.toggle()
-                    }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        self.willCapturePhoto.toggle()
-                    }
-                    
-                }, completionHandler: { photoCaptureProcessor in
-                    self.sessionQueue.async {
-                        self.inProgressPhotoCaptureDelegates[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
-                    }
-                })
+                guard let videoDevice = self.videoDevice() else { return }
 
-                self.inProgressPhotoCaptureDelegates[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = photoCaptureProcessor
-                self.photoOutput.capturePhoto(with: photoSettings, delegate: photoCaptureProcessor)
+                do {
+                    try  videoDevice.lockForConfiguration()
+                    let dimensions = CMVideoFormatDescriptionGetDimensions(videoDevice.activeFormat.formatDescription)
+                    self.bufferSize.width = CGFloat(dimensions.width)
+                    self.bufferSize.height = CGFloat(dimensions.height)
+                    videoDevice.unlockForConfiguration()
+                } catch {
+                    print(error)
+                }
             }
         }
     }
+    
+    private func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
+        switch UIDevice.current.orientation {
+        case UIDeviceOrientation.portraitUpsideDown:
+            return .left
+        case UIDeviceOrientation.landscapeLeft:
+            return .upMirrored
+        case UIDeviceOrientation.landscapeRight:
+            return .down
+        case UIDeviceOrientation.portrait:
+            return .up
+        default:
+            return .up
+        }
+    }
+}
+
+extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        ObjectRecognitionService.detectVisionRequestResults(sampleBuffer: sampleBuffer)
+    }
+    func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {}
 }

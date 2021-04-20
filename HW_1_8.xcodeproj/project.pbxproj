@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4BD59BDF262F35F200434DB4 /* ObjectRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD59BDE262F35F200434DB4 /* ObjectRecognitionService.swift */; };
+		4BD59BE8262F458200434DB4 /* TVFinder.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4BD59BE7262F458200434DB4 /* TVFinder.mlmodel */; };
 		4BE53D53262CB0D4000FAEEB /* HW_1_8App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D52262CB0D4000FAEEB /* HW_1_8App.swift */; };
 		4BE53D57262CB0D6000FAEEB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BE53D56262CB0D6000FAEEB /* Assets.xcassets */; };
 		4BE53D5A262CB0D6000FAEEB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BE53D59262CB0D6000FAEEB /* Preview Assets.xcassets */; };
@@ -14,10 +16,11 @@
 		4BE53D68262CC145000FAEEB /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D67262CC145000FAEEB /* CameraService.swift */; };
 		4BE53D6C262CC4B3000FAEEB /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D6B262CC4B3000FAEEB /* CameraViewModel.swift */; };
 		4BE53D6F262CC4E6000FAEEB /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D6E262CC4E6000FAEEB /* CameraPreview.swift */; };
-		4BE53D75262CC53B000FAEEB /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE53D74262CC53B000FAEEB /* PhotoCaptureProcessor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4BD59BDE262F35F200434DB4 /* ObjectRecognitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRecognitionService.swift; sourceTree = "<group>"; };
+		4BD59BE7262F458200434DB4 /* TVFinder.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = TVFinder.mlmodel; sourceTree = "<group>"; };
 		4BE53D4F262CB0D4000FAEEB /* HW_1_8.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HW_1_8.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BE53D52262CB0D4000FAEEB /* HW_1_8App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HW_1_8App.swift; sourceTree = "<group>"; };
 		4BE53D56262CB0D6000FAEEB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -27,7 +30,6 @@
 		4BE53D67262CC145000FAEEB /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 		4BE53D6B262CC4B3000FAEEB /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		4BE53D6E262CC4E6000FAEEB /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
-		4BE53D74262CC53B000FAEEB /* PhotoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCaptureProcessor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,9 +64,9 @@
 			children = (
 				4BE53D79262CCE86000FAEEB /* Views */,
 				4BE53D7A262CCEA7000FAEEB /* ViewModel */,
-				4BE53D7C262CCECE000FAEEB /* Helpers */,
 				4BE53D7B262CCEC2000FAEEB /* Services */,
 				4BE53D52262CB0D4000FAEEB /* HW_1_8App.swift */,
+				4BD59BE7262F458200434DB4 /* TVFinder.mlmodel */,
 				4BE53D56262CB0D6000FAEEB /* Assets.xcassets */,
 				4BE53D5B262CB0D6000FAEEB /* Info.plist */,
 				4BE53D58262CB0D6000FAEEB /* Preview Content */,
@@ -101,16 +103,9 @@
 			isa = PBXGroup;
 			children = (
 				4BE53D67262CC145000FAEEB /* CameraService.swift */,
+				4BD59BDE262F35F200434DB4 /* ObjectRecognitionService.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		4BE53D7C262CCECE000FAEEB /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				4BE53D74262CC53B000FAEEB /* PhotoCaptureProcessor.swift */,
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,8 +179,9 @@
 			files = (
 				4BE53D68262CC145000FAEEB /* CameraService.swift in Sources */,
 				4BE53D63262CB386000FAEEB /* CameraView.swift in Sources */,
-				4BE53D75262CC53B000FAEEB /* PhotoCaptureProcessor.swift in Sources */,
 				4BE53D6F262CC4E6000FAEEB /* CameraPreview.swift in Sources */,
+				4BD59BE8262F458200434DB4 /* TVFinder.mlmodel in Sources */,
+				4BD59BDF262F35F200434DB4 /* ObjectRecognitionService.swift in Sources */,
 				4BE53D6C262CC4B3000FAEEB /* CameraViewModel.swift in Sources */,
 				4BE53D53262CB0D4000FAEEB /* HW_1_8App.swift in Sources */,
 			);
